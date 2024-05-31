@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashok_data_analyst</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #808000; /* Olive background */
+            color: #ffffff;
+        }
+        .calculator {
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border: 2px solid white; /* White border */
+        }
+        .calculator-name {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #ffffff; /* White text for the name */
+        }
+        .display {
+            width: 100%;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 2em;
+            text-align: right;
+            padding-right: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 2px solid #ffffff; /* White border */
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+            margin-top: 20px;
+        }
+        .button {
+            width: 100%;
+            height: 50px;
+            background-color: #008080; /* Teal color for keys */
+            border: 2px solid black; /* Black border to highlight keys */
+            color: white;
+            font-size: 1.5em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #006666; /* Darker teal color on hover */
+        }
+        .button.operator {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .button.operator:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .button.equal {
+            grid-column: span 2;
+            background-color: #61dafb;
+            color: black; /* Ensure good contrast */
+        }
+        .button.equal:hover {
+            background-color: #21a1f1;
+        }
+        .profile-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            text-decoration: none;
+            color: white;
+            font-size: 1.2em;
+        }
+        .profile-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="calculator-name">Ashok Chinnamarla</div>
+        <input type="text" class="display" id="display" disabled>
+        <div class="buttons">
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button operator" onclick="appendOperator('/')">/</button>
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button operator" onclick="appendOperator('*')">*</button>
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button operator" onclick="appendOperator('-')">-</button>
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button" onclick="appendDot()">.</button>
+            <button class="button equal" onclick="calculate()">=</button>
+            <button class="button operator" onclick="appendOperator('+')">+</button>
+            <button class="button" onclick="clearDisplay()">C</button>
+            <button class="button operator" onclick="deleteLast()">DEL</button>
+        </div>
+        <a href="https://www.linkedin.com/in/ashok-chinnamarla-a10294266/" target="_blank" rel="noopener noreferrer" class="profile-link">LinkedIn Profile</a>
+    </div>
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '';
+        let operator = null;
+        let previousInput = '';
+
+        function appendNumber(number) {
+            currentInput += number;
+            updateDisplay();
+        }
+
+        function appendDot() {
+            if (!currentInput.includes('.')) {
+                currentInput += '.';
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (currentInput === '' && previousInput !== '') {
+                operator = op;
+                updateDisplay(); // Ensure operator is displayed
+                return;
+            }
+            if (currentInput === '' && previousInput === '') {
+                return;
+            }
+            if (previousInput !== '') {
+                calculate();
+            }
+            operator = op;
+            previousInput = currentInput;
+            currentInput = '';
+            updateDisplay(); // Update display to show the current state
+        }
+
+        function calculate() {
+            if (currentInput === '' || previousInput === '') {
+                return;
+            }
+            let result;
+            const prev = parseFloat(previousInput);
+            const curr = parseFloat(currentInput);
+            switch (operator) {
+                case '+':
+                    result = prev + curr;
+                    break;
+                case '-':
+                    result = prev - curr;
+                    break;
+                case '*':
+                    result = prev * curr;
+                    break;
+                case '/':
+                    result = prev / curr;
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result.toString();
+            operator = null;
+            previousInput = '';
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '';
+            operator = null;
+            previousInput = '';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            currentInput = currentInput.toString().slice(0, -1);
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            display.value = `${previousInput} ${operator || ''} ${currentInput}`.trim(); // Display the full expression
+        }
+    </script>
+</body>
